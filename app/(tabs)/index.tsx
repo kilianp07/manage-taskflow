@@ -46,13 +46,14 @@ export default function TasksScreen() {
             </Pressable>
             <Pressable
               onPress={() => deleteTask(item.id)}
+              testID={`delete-button-${item.id}`}
               style={styles.deleteButton}>
               <Trash2 size={20} color="#FF3B30" />
             </Pressable>
           </View>
         )}
       />
-      <Pressable style={styles.fab}>
+      <Pressable style={styles.fab} testID='add-button'>
         <Plus size={24} color="#FFFFFF" />
       </Pressable>
     </View>

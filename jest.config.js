@@ -18,7 +18,7 @@ const config = {
         'app/**/*.{js,jsx,ts,tsx}',
     ],
     coverageReporters: ['json', 'lcov', 'text'], // Format des rapports de couverture (text, lcov, etc.)
-    coverageDirectory: '<rootDir>/coverage', // Dossier où les rapports de couverture seront stockés
+    coverageDirectory: '<rootDir>/.coverage', // Dossier où les rapports de couverture seront stockés
 };
 
 module.exports = config;

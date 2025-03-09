@@ -9,7 +9,7 @@
     "lint": "expo lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:ci": "jest --coverage --coverageReporters='json' --coverageDirectory='./coverage'"
+    "test:ci": "jest --coverage --coverageReporters='json' --coverageDirectory='./.coverage'"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",
