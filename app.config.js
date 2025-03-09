@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "bolt-expo-nativewind",
-    slug: "bolt-expo-nativewind",
+    name: "manage-taskFlow",
+    slug: "manage-taskFlow",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
