@@ -20,7 +20,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     try {
       const response = await TasksAPI.getTasks();
       set({ tasks: response.data });
-    } catch (error) {
+    } catch  {
       set({ error: 'Failed to fetch tasks' });
     } finally {
       set({ isLoading: false });
@@ -31,7 +31,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     try {
       const response = await TasksAPI.createTask(task);
       set({ tasks: [...get().tasks, response.data] });
-    } catch (error) {
+    } catch {
       set({ error: 'Failed to create task' });
     } finally {
       set({ isLoading: false });
@@ -44,7 +44,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set({
         tasks: get().tasks.map((t) => (t.id === id ? response.data : t)),
       });
-    } catch (error) {
+    } catch  {
       set({ error: 'Failed to update task' });
     } finally {
       set({ isLoading: false });
@@ -55,7 +55,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     try {
       await TasksAPI.deleteTask(id);
       set({ tasks: get().tasks.filter((t) => t.id !== id) });
-    } catch (error) {
+    } catch  {
       set({ error: 'Failed to delete task' });
     } finally {
       set({ isLoading: false });

@@ -8,7 +8,7 @@ export default function TasksScreen() {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   if (isLoading) {
     return (
