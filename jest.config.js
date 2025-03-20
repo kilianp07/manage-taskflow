@@ -17,8 +17,9 @@ const config = {
     collectCoverageFrom: [
         'app/**/*.{js,jsx,ts,tsx}',
     ],
-    coverageReporters: ['json', 'lcov', 'text'], // Format des rapports de couverture (text, lcov, etc.)
+    coverageReporters: ['json', 'lcov', 'text','clover', 'cobertura'], // Format des rapports de couverture (text, lcov, etc.)
     coverageDirectory: '<rootDir>/.coverage', // Dossier où les rapports de couverture seront stockés
+    reporters: ["default", ["jest-junit", { outputDirectory: ".coverage", outputName: "junit.xml" }]]
 };
 
 module.exports = config;
