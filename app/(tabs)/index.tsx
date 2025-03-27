@@ -5,11 +5,16 @@ import { Plus, Trash2 } from 'lucide-react-native';
 import { Task } from '@/lib/api';
 
 export default function TasksScreen() {
-  const { tasks, isLoading, error, fetchTasks, deleteTask, updateTask } = useTaskStore();
+  const { tasks, isLoading, error, fetchTasks, deleteTask, updateTask, createTask } = useTaskStore();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedDueDate, setEditedDueDate] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [color, setColor] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -20,9 +25,19 @@ export default function TasksScreen() {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       console.error('Invalid date format:', dateString);
-      return '';
-    }
+    };
     return date.toISOString();
+  };
+
+  const handleCreateTask = () => {
+    if (title.trim() && description.trim() && dueDate.trim() && color.trim()) {
+      createTask({ title, description, dueDate: toISOStringDate(dueDate), color});
+      setTitle('');
+      setDescription('');
+      setDueDate('');
+      setColor('');
+      setModalVisible(false);
+    }
   };
 
   if (isLoading) {
@@ -74,7 +89,8 @@ export default function TasksScreen() {
           </View>
         )}
       />
-      <Pressable style={styles.fab} testID='add-button'>
+
+      <Pressable style={styles.fab} testID='add-button' onPress={() => setModalVisible(true)}>
         <Plus size={24} color="#FFFFFF" />
       </Pressable>
       {editingTask && (
@@ -141,6 +157,26 @@ export default function TasksScreen() {
           </View>
         </Modal>
       )}
+      
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Créer une tâche</Text>
+            <TextInput style={styles.input} placeholder="Titre" value={title} onChangeText={setTitle} />
+            <TextInput style={styles.input} placeholder="Description" value={description} onChangeText={setDescription} />
+            <TextInput style={styles.input} placeholder="YYYY-MM-DD" value={dueDate} onChangeText={setDueDate} />
+            <TextInput style={styles.input} placeholder="#FFFFFF" value={color} onChangeText={setColor} />
+            <View style={styles.modalButtons}>
+              <Pressable style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonText}>Annuler</Text>
+              </Pressable>
+              <Pressable style={styles.createButton} onPress={handleCreateTask}>
+                <Text style={styles.buttonText}>Créer</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -158,10 +194,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 3,
   },
   taskContent: {
@@ -194,38 +226,53 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
     elevation: 5,
-  },
-  errorText: {
-    color: '#FF3B30',
-    textAlign: 'center',
-    marginTop: 16,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     padding: 20,
     borderRadius: 10,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#CCC',
+    borderRadius: 8,
     padding: 10,
     marginBottom: 10,
-    borderRadius: 5,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  cancelButton: {
+    backgroundColor: '#FF3B30',
+    padding: 10,
+    borderRadius: 8,
+  },
+  createButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#FFF',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: '#FF3B30',
+    textAlign: 'center',
+    marginTop: 16,
   },
 });
