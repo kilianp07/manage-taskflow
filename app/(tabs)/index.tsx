@@ -101,8 +101,11 @@ export default function TasksScreen() {
                       title: editedTitle,
                       description: editedDescription,
                       dueDate: editedDueDate,
-                    });
-                    setEditingTask(null);
+                    })
+                      .then(() => setEditingTask(null))
+                      .catch((err) => {
+                        console.error('Erreur lors de la mise à jour de la tâche :', err);
+                      });
                   }}
                 />
                 <Button title="Annuler" onPress={() => setEditingTask(null)} />
