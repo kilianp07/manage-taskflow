@@ -15,6 +15,10 @@ export default function TasksScreen() {
     fetchTasks();
   }, [fetchTasks]);
 
+  const toISOStringDate = (dateString: string) => {
+    return new Date(dateString).toISOString();
+  };
+
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -89,7 +93,7 @@ export default function TasksScreen() {
               />
               <TextInput
                 style={styles.input}
-                placeholder="YYYY-MM-DD"
+                placeholder="DD-MM-YYYY"
                 value={editedDueDate}
                 onChangeText={setEditedDueDate}
               />
@@ -100,7 +104,7 @@ export default function TasksScreen() {
                     updateTask(editingTask.id, {
                       title: editedTitle,
                       description: editedDescription,
-                      dueDate: editedDueDate,
+                      dueDate: toISOStringDate(editedDueDate),
                     })
                       .then(() => setEditingTask(null))
                       .catch((err) => {
