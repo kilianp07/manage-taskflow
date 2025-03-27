@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Pressable, Modal, TextInput, Button } from 'react-native';
 import { useTaskStore } from '@/stores/taskStore';
 import { Plus, Trash2 } from 'lucide-react-native';
+import { Task } from '@/lib/api';
 
 export default function TasksScreen() {
   const { tasks, isLoading, error, fetchTasks, deleteTask, updateTask } = useTaskStore();
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedDescription, setEditedDescription] = useState('');
+  const [editedDueDate, setEditedDueDate] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -35,6 +40,12 @@ export default function TasksScreen() {
           <View style={styles.taskItem}>
             <Pressable
               onPress={() => updateTask(item.id, { completed: !item.completed })}
+              onLongPress={() => {
+                setEditingTask(item);
+                setEditedTitle(item.title);
+                setEditedDescription(item.description);
+                setEditedDueDate(item.dueDate ? item.dueDate.split('T')[0] : '');
+              }}
               style={styles.taskContent}>
               <Text style={[
                 styles.taskTitle,
@@ -56,6 +67,50 @@ export default function TasksScreen() {
       <Pressable style={styles.fab} testID='add-button'>
         <Plus size={24} color="#FFFFFF" />
       </Pressable>
+      {editingTask && (
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setEditingTask(null)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput
+                style={styles.input}
+                placeholder="Titre"
+                value={editedTitle}
+                onChangeText={setEditedTitle}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Description"
+                value={editedDescription}
+                onChangeText={setEditedDescription}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="YYYY-MM-DD"
+                value={editedDueDate}
+                onChangeText={setEditedDueDate}
+              />
+              <View style={styles.modalButtons}>
+                <Button
+                  title="Enregistrer"
+                  onPress={() => {
+                    updateTask(editingTask.id, {
+                      title: editedTitle,
+                      description: editedDescription,
+                      dueDate: editedDueDate,
+                    });
+                    setEditingTask(null);
+                  }}
+                />
+                <Button title="Annuler" onPress={() => setEditingTask(null)} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -119,5 +174,28 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     textAlign: 'center',
     marginTop: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
