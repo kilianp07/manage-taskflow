@@ -16,7 +16,13 @@ export default function TasksScreen() {
   }, [fetchTasks]);
 
   const toISOStringDate = (dateString: string) => {
-    return new Date(dateString).toISOString();
+    if (!dateString.trim()) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date format:', dateString);
+      return '';
+    }
+    return date.toISOString();
   };
 
   if (isLoading) {
@@ -100,7 +106,7 @@ export default function TasksScreen() {
               />
               <TextInput
                 style={styles.input}
-                placeholder="DD-MM-YYYY"
+                placeholder="YYYY-MM-DD"
                 value={editedDueDate}
                 onChangeText={setEditedDueDate}
                 accessibilityLabel="Date d'échéance"
