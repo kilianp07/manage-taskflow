@@ -118,8 +118,11 @@ export default function TasksScreen() {
                       title: editedTitle,
                       description: editedDescription,
                       dueDate: toISOStringDate(editedDueDate),
+                    }).then(() => {
+                      setTimeout(() => {
+                        setEditingTask(null);
+                      }, 500); // laisse le temps au Modal de se fermer proprement
                     })
-                      .then(() => setEditingTask(null))
                       .catch((err) => {
                         Alert.alert('Erreur', 'Erreur lors de la mise à jour de la tâche.');
                         console.error('Erreur lors de la mise à jour de la tâche :', err);
