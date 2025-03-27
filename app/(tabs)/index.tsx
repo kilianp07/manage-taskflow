@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable, Modal, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, Modal, TextInput, Button, Alert } from 'react-native';
 import { useTaskStore } from '@/stores/taskStore';
 import { Plus, Trash2 } from 'lucide-react-native';
 import { Task } from '@/lib/api';
@@ -84,23 +84,36 @@ export default function TasksScreen() {
                 placeholder="Titre"
                 value={editedTitle}
                 onChangeText={setEditedTitle}
+                accessibilityLabel="Titre de la tâche"
+                maxLength={50}
+                keyboardType="default"
               />
               <TextInput
                 style={styles.input}
                 placeholder="Description"
                 value={editedDescription}
                 onChangeText={setEditedDescription}
+                accessibilityLabel="Description de la tâche"
+                multiline
+                maxLength={200}
+                keyboardType="default"
               />
               <TextInput
                 style={styles.input}
                 placeholder="DD-MM-YYYY"
                 value={editedDueDate}
                 onChangeText={setEditedDueDate}
+                accessibilityLabel="Date d'échéance"
+                keyboardType="default"
               />
               <View style={styles.modalButtons}>
                 <Button
                   title="Enregistrer"
                   onPress={() => {
+                    if (!editedTitle.trim()) {
+                      Alert.alert('Erreur', 'Le titre ne peut pas être vide.');
+                      return;
+                    }
                     updateTask(editingTask.id, {
                       title: editedTitle,
                       description: editedDescription,
@@ -108,6 +121,7 @@ export default function TasksScreen() {
                     })
                       .then(() => setEditingTask(null))
                       .catch((err) => {
+                        Alert.alert('Erreur', 'Erreur lors de la mise à jour de la tâche.');
                         console.error('Erreur lors de la mise à jour de la tâche :', err);
                       });
                   }}
